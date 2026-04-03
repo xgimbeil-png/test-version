@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>해외주식팀 민원·장애 대응 가이드</title>
+<style>
+  :root {
+    --primary: #1a3a6b;
+    --primary-light: #2756a3;
+    --accent: #e8411e;
+    --accent2: #f0a500;
+    --bg: #f4f6fb;
+    --card: #ffffff;
+    --border: #d0d7e8;
+    --text: #1a2035;
+    --muted: #6b7a99;
+    --success: #1a7f5a;
+    --success-bg: #e6f5ef;
+    --warning: #b45309;
+    --warning-bg: #fff7e6;
+    --danger: #c0392b;
+    --danger-bg: #fdf0ef;
+    --tag-bg: #eef2fc;
+    --shadow: 0 2px 12px rgba(26,58,107,0.08);
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: #fff;
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-title { display: flex; align-items: center; gap: 12px; }
+  .header-title .badge {
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+  .header h1 { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+  .header .sub { font-size: 12px; opacity: 0.75; margin-top: 2px; }
+  .header-meta { font-size: 12px; opacity: 0.7; text-align: right; }
+
+  /* Tab */
+  .tab-wrap { background: #fff; border-bottom: 2px solid var(--border); position: sticky; top: 64px; z-index: 90; }
+  .tabs { display: flex; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  .tab-btn {
+    padding: 14px 28px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: -2px;
+  }
+  .tab-btn:hover { color: var(--primary-light); }
+  .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+  .tab-icon { font-size: 16px; }
+
+  /* Main Layout */
+  .main { max-width: 1200px; margin: 0 auto; padding: 28px 24px; }
+  .layout { display: grid; grid-template-columns: 380px 1fr; gap: 24px; align-items: start; }
+  @media(max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+
+  /* Panel */
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .panel-header {
+    background: var(--primary);
+    color: #fff;
+    padding: 14px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .panel-body { padding: 18px; }
+
+  /* Form Elements */
+  .form-section { margin-bottom: 18px; }
+  .form-section:last-child { margin-bottom: 0; }
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .field { margin-bottom: 10px; }
+  .field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .field label .req { color: var(--accent); margin-left: 2px; }
+  .field label .hint { color: var(--muted); font-weight: 400; font-size: 11px; margin-left: 4px; }
+  .field input, .field select, .field textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--text);
+    background: #f9fafd;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    font-family: inherit;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none;
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 3px rgba(39,86,163,0.12);
+    background: #fff;
+  }
+  .field textarea { resize: vertical; min-height: 64px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  /* Severity */
+  .severity-group { display: flex; gap: 6px; flex-wrap: wrap; }
+  .severity-btn {
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: #f9fafd;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+  .severity-btn:hover { border-color: var(--primary-light); }
+  .severity-btn.s1 { border-color: #c0392b; color: #c0392b; }
+  .severity-btn.s2 { border-color: #e67e22; color: #e67e22; }
+  .severity-btn.s3 { border-color: #f0a500; color: #f0a500; }
+  .severity-btn.s4 { border-color: #1a7f5a; color: #1a7f5a; }
+  .severity-btn.active.s1 { background: #c0392b; color: #fff; }
+  .severity-btn.active.s2 { background: #e67e22; color: #fff; }
+  .severity-btn.active.s3 { background: #f0a500; color: #fff; }
+  .severity-btn.active.s4 { background: #1a7f5a; color: #fff; }
+
+  /* Action Buttons */
+  .btn-group { display: flex; gap: 8px; margin-top: 16px; }
+  .btn {
+    flex: 1;
+    padding: 11px 16px;
+    border: none;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover { background: var(--primary-light); box-shadow: 0 4px 12px rgba(26,58,107,0.25); }
+  .btn-secondary { background: #f0f3fa; color: var(--primary); border: 1px solid var(--border); }
+  .btn-secondary:hover { background: #e2e8f5; }
+  .btn-copy { background: var(--success-bg); color: var(--success); border: 1px solid #a7d9c4; }
+  .btn-copy:hover { background: #c3ead8; }
+  .btn-danger { background: var(--danger-bg); color: var(--danger); border: 1px solid #f5bdb7; }
+  .btn-danger:hover { background: #f9d0cc; }
+
+  /* Output */
+  .output-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .output-label { font-size: 13px; font-weight: 700; color: var(--primary); }
+  .output-actions { display: flex; gap: 8px; }
+  .btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s;
+  }
+  .btn-sm-copy { background: var(--success-bg); color: var(--success); border: 1px solid #a7d9c4; }
+  .btn-sm-copy:hover { background: #c3ead8; }
+  .btn-sm-print { background: #eef2fc; color: var(--primary); border: 1px solid var(--border); }
+  .btn-sm-print:hover { background: #dce5f5; }
+  .btn-sm-reset { background: var(--danger-bg); color: var(--danger); border: 1px solid #f5bdb7; }
+  .btn-sm-reset:hover { background: #f9d0cc; }
+
+  /* Document Preview */
+  .doc-preview {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .doc-preview-header {
+    background: linear-gradient(135deg, #f4f6fb 0%, #eef2fc 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .doc-type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.3px;
+  }
+  .badge-complaint { background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; }
+  .badge-incident { background: #fce4ec; color: #c62828; border: 1px solid #ef9a9a; }
+
+  #doc-content {
+    padding: 24px 28px;
+    min-height: 500px;
+    font-size: 13.5px;
+    line-height: 1.75;
+  }
+  .doc-placeholder {
+    color: var(--muted);
+    text-align: center;
+    padding: 80px 20px;
+  }
+  .doc-placeholder .icon { font-size: 48px; margin-bottom: 12px; }
+  .doc-placeholder p { font-size: 14px; }
+  .doc-placeholder small { font-size: 12px; color: #aab; }
+
+  /* Generated Document Styles */
+  .doc-title { font-size: 17px; font-weight: 800; color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 8px; margin-bottom: 20px; letter-spacing: -0.3px; }
+  .doc-meta { background: var(--tag-bg); border: 1px solid var(--border); border-radius: 7px; padding: 12px 16px; margin-bottom: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 24px; }
+  .doc-meta-item { font-size: 12.5px; display: flex; gap: 6px; }
+  .doc-meta-key { color: var(--muted); font-weight: 600; white-space: nowrap; }
+  .doc-meta-val { color: var(--text); font-weight: 500; }
+  .doc-section { margin-bottom: 22px; }
+  .doc-section-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: #fff;
+    background: var(--primary);
+    padding: 5px 12px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    display: inline-block;
+  }
+  .doc-section-title.orange { background: #e67e22; }
+  .doc-section-title.green { background: var(--success); }
+  .doc-section-title.red { background: var(--danger); }
+  .doc-section-title.gray { background: var(--muted); }
+  .doc-text { font-size: 13.5px; line-height: 1.8; color: var(--text); white-space: pre-wrap; }
+  .doc-highlight {
+    background: #fff9e6;
+    border-left: 3px solid var(--accent2);
+    padding: 10px 14px;
+    border-radius: 0 6px 6px 0;
+    margin: 8px 0;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .doc-highlight.red { background: #fff0ef; border-left-color: var(--accent); }
+  .doc-highlight.green { background: var(--success-bg); border-left-color: var(--success); }
+  .timeline { border-left: 2px solid var(--border); padding-left: 16px; margin: 8px 0; }
+  .timeline-item { margin-bottom: 12px; position: relative; }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -21px;
+    top: 5px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--primary-light);
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px var(--primary-light);
+  }
+  .timeline-item.red::before { background: var(--danger); box-shadow: 0 0 0 1px var(--danger); }
+  .timeline-item.green::before { background: var(--success); box-shadow: 0 0 0 1px var(--success); }
+  .timeline-time { font-size: 11.5px; font-weight: 700; color: var(--primary-light); }
+  .timeline-desc { font-size: 13px; color: var(--text); line-height: 1.6; }
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 10px 0; }
+  .stat-card { background: var(--tag-bg); border: 1px solid var(--border); border-radius: 7px; padding: 10px 12px; text-align: center; }
+  .stat-card .stat-num { font-size: 20px; font-weight: 800; color: var(--primary); }
+  .stat-card .stat-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .impact-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .impact-s1 { background: #fdecea; color: #c0392b; }
+  .impact-s2 { background: #fdf0e0; color: #e67e22; }
+  .impact-s3 { background: #fefce8; color: #b45309; }
+  .impact-s4 { background: var(--success-bg); color: var(--success); }
+  .doc-footer {
+    border-top: 1px dashed var(--border);
+    margin-top: 24px;
+    padding-top: 12px;
+    font-size: 11.5px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* Narrative Summary Block */
+  .doc-summary {
+    background: linear-gradient(135deg, #eef4ff 0%, #f0f8ff 100%);
+    border: 1.5px solid #b8d0f5;
+    border-left: 4px solid var(--primary);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin-bottom: 22px;
+    line-height: 1.85;
+    font-size: 13.5px;
+    color: var(--text);
+  }
+  .doc-summary-label {
+    font-size: 10.5px;
+    font-weight: 800;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 7px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .doc-summary p { margin: 0; }
+  .doc-summary strong { color: var(--primary); }
+
+  .doc-summary.incident {
+    background: linear-gradient(135deg, #fff5f5 0%, #fff9f9 100%);
+    border-color: #f5c6c1;
+    border-left-color: var(--danger);
+  }
+  .doc-summary.incident .doc-summary-label { color: var(--danger); }
+  .checklist { list-style: none; padding: 0; }
+  .checklist li { padding: 4px 0; font-size: 13px; display: flex; gap: 8px; align-items: flex-start; }
+  .checklist li::before { content: '☐'; font-size: 14px; color: var(--primary); flex-shrink: 0; }
+  .checklist li.done::before { content: '☑'; color: var(--success); }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: var(--primary);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s;
+    z-index: 9999;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  /* Status indicator */
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+  .status-dot.red { background: var(--danger); }
+  .status-dot.yellow { background: var(--accent2); }
+  .status-dot.green { background: var(--success); }
+
+  /* Divider */
+  .divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+  /* Responsive print */
+  @media print {
+    .tab-wrap, .header, .layout > .panel:first-child { display: none !important; }
+    .doc-preview { border: none; box-shadow: none; }
+    .doc-preview-header .output-actions { display: none; }
+    body { background: #fff; }
+  }
+
+  /* Timestamp input styling */
+  .timeline-inputs { display: flex; flex-direction: column; gap: 6px; }
+  .timeline-row { display: flex; gap: 6px; align-items: center; }
+  .timeline-row input[type="time"] { width: 90px; flex-shrink: 0; }
+  .timeline-row input[type="text"] { flex: 1; }
+  .timeline-row .btn-del { background: #fdecea; color: #c0392b; border: 1px solid #f5bdb7; border-radius: 5px; padding: 6px 8px; cursor: pointer; font-size: 12px; flex-shrink: 0; }
+  .btn-add-row { background: #eef2fc; color: var(--primary); border: 1px solid var(--border); border-radius: 5px; padding: 6px 12px; cursor: pointer; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 4px; margin-top: 4px; font-family: inherit; }
+  .btn-add-row:hover { background: #dce5f5; }
+
+  /* Tabs within sections */
+  .hidden { display: none !important; }
+
+  /* Severity pill in output */
+  .sev-pill { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-left: 6px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">
+    <div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:20px;">📊</span>
+        <h1>해외주식팀 민원·장애 대응 가이드</h1>
+        <span class="badge">INTERNAL</span>
+      </div>
+      <div class="sub">증권 해외주식팀 전용 · 고객민원응대 / 장애내부공유 문서 즉시 생성</div>
+    </div>
+  </div>
+  <div class="header-meta">
+    <div id="current-time"></div>
+    <div style="margin-top:2px;">작성자 확인 후 발송</div>
+  </div>
+</div>
+
+<div class="tab-wrap">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('complaint')" id="tab-complaint">
+      <span class="tab-icon">📋</span> 고객민원 응대문서
+    </button>
+    <button class="tab-btn" onclick="switchTab('incident')" id="tab-incident">
+      <span class="tab-icon">🚨</span> 장애 내부공유 문서
+    </button>
+  </div>
+</div>
+
+<!-- =============================== COMPLAINT TAB =============================== -->
+<div class="main" id="page-complaint">
+  <div class="layout">
+    <!-- Input Panel -->
+    <div class="panel">
+      <div class="panel-header">
+        <span>📋</span> 고객민원 응대 정보 입력
+      </div>
+      <div class="panel-body">
+
+        <div class="form-section">
+          <div class="section-label">기본 정보</div>
+          <div class="field-row">
+            <div class="field">
+              <label>발생일자 <span class="req">*</span></label>
+              <input type="date" id="c-date" />
+            </div>
+            <div class="field">
+              <label>장애 발생 시각 <span class="req">*</span></label>
+              <input type="time" id="c-start-time" />
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>복구/종료 시각</label>
+              <input type="time" id="c-end-time" />
+            </div>
+            <div class="field">
+              <label>문서 작성자</label>
+              <input type="text" id="c-author" placeholder="예: 홍길동 대리" />
+            </div>
+          </div>
+          <div class="field">
+            <label>대상 서비스/시스템 <span class="req">*</span></label>
+            <input type="text" id="c-service" placeholder="예: 해외주식 주문시스템, MTS 해외주식 탭" />
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="section-label">장애 개요</div>
+          <div class="field">
+            <label>장애 사유 (핵심 키워드) <span class="req">*</span></label>
+            <textarea id="c-reason" rows="2" placeholder="예: 미국 NYSE 거래소 접속 지연, 시스템 점검 중 패킷 손실 발생"></textarea>
+          </div>
+          <div class="field">
+            <label>종목 관련 사유 <span class="hint">(종목 이슈 시)</span></label>
+            <input type="text" id="c-stock" placeholder="예: NVDA 옵션만기일, TSLA 서킷브레이커 발동" />
+          </div>
+          <div class="field">
+            <label>고객 증상 요약 <span class="req">*</span></label>
+            <textarea id="c-symptom" rows="2" placeholder="예: 주문 버튼 클릭 시 오류 코드 표시, 체결 지연 발생"></textarea>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="section-label">영향 규모</div>
+          <div class="field-row">
+            <div class="field">
+              <label>영향 고객 수</label>
+              <input type="text" id="c-customers" placeholder="예: 약 1,200명" />
+            </div>
+            <div class="field">
+              <label>영향 계좌 수</label>
+              <input type="text" id="c-accounts" placeholder="예: 약 1,450건" />
+            </div>
+          </div>
+          <div class="field">
+            <label>영향 거래 범위</label>
+            <input type="text" id="c-scope" placeholder="예: 미국주식 전종목, 나스닥 특정 종목군" />
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="section-label">고객 관점 타임라인 <span style="color:var(--muted);font-size:11px;font-weight:400;">(고객이 경험한 순서)</span></div>
+          <div class="timeline-inputs" id="c-timeline-rows">
+            <div class="timeline-row">
+              <input type="time" placeholder="시각" />
+              <input type="text" placeholder="고객이 경험한 상황 (예: 주문 오류 발생)" />
+              <button class="btn-del" onclick="delRow(this)">✕</button>
+            </div>
+          </div>
+          <button class="btn-add-row" onclick="addRow('c-timeline-rows')">+ 타임라인 추가</button>
+        </div>
+
+        <div class="form-section">
+          <div class="section-label">응대 처리 내용</div>
+          <div class="field">
+            <label>당사 조치 사항 <span class="req">*</span></label>
+            <textarea id="c-action" rows="2" placeholder="예: 즉시 기술팀 에스컬레이션, 거래소 긴급 연락, 시스템 재기동"></textarea>
+          </div>
+          <div class="field">
+            <label>고객 안내/보상 내용</label>
+            <textarea id="c-compensation" rows="2" placeholder="예: SMS 안내 발송, 체결 수수료 환불, 공식 사과문 발송"></textarea>
+          </div>
+          <div class="field">
+            <label>재발방지 대책</label>
+            <textarea id="c-prevention" rows="2" placeholder="예: 이중화 시스템 도입, 모니터링 임계치 조정"></textarea>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="section-label">규정/법적 사항</div>
+          <div class="field">
+            <label>금융감독원 보고 여부</label>
+            <select id="c-fss">
+              <option value="">선택</option>
+              <option value="해당없음">해당없음</option>
+              <option value="보고 대상 검토 중">보고 대상 검토 중</option>
+              <option value="보고 완료">보고 완료</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>거래설명서 관련 사항</label>
+            <textarea id="c-doc" rows="2" placeholder="예: 해외주식 거래설명서 제3조 시스템 장애 관련 조항 안내"></textarea>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="section-label">추가 비고</div>
+          <div class="field">
+            <label>담당팀 연락처</label>
+            <input type="text" id="c-contact" placeholder="예: 해외주식팀 02-XXXX-XXXX" />
+          </div>
+          <div class="field">
+            <label>특이사항 / 추가 메모</label>
+            <textarea id="c-memo" rows="2" placeholder="특별히 명시할 사항을 입력하세요"></textarea>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="generateComplaint()">📄 문서 생성</button>
+          <button class="btn btn-secondary" onclick="resetComplaint()">↺ 초기화</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Output Panel -->
+    <div>
+      <div class="doc-preview">
+        <div class="doc-preview-header">
+          <div>
+            <div class="doc-type-badge badge-complaint">📋 고객민원 응대문서</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px;" id="c-doc-meta">문서를 생성하면 여기에 표시됩니다</div>
+          </div>
+          <div class="output-actions">
+            <button class="btn-sm btn-sm-copy" onclick="copyDoc()">📋 복사</button>
+            <button class="btn-sm btn-sm-print" onclick="window.print()">🖨️ 인쇄</button>
+          </div>
+        </div>
+        <div id="doc-content">
+          <div class="doc-placeholder">
+            <div class="icon">📋</div>
+            <p>좌측 양식을 작성 후<br><strong>문서 생성</strong> 버튼을 눌러주세요</p>
+            <br>
+            <small>생성된 문서는 복사·인쇄 가능합니다</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =============================== INCIDENT TAB =============================== -->
+<div class="main hidden" id="page-incident">
+  <div class="layout">
+    <!-- Input Panel -->
+    <div class="panel">
+      <div class="panel-header">
+        <span>🚨</span> 장애 내부공유 정보 입력
+      </div>
+      <div class="panel-body">
+
+        <div class="form-section">
+          <div class="section-label">장애 기본 정보</div>
+          <div class="field">
+            <label>장애 제목 <span class="req">*</span></label>
+            <input type="text" id="i-title" placeholder="예: [긴급] 해외주식 주문시스템 접속 장애" />
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>발생일자 <span class="req">*</span></label>
+              <input type="date" id="i-date" />
+            </div>
+            <div class="field">
+              <label>장애 등급 <span class="req">*</span></label>
+              <select id="i-level">
+                <option value="">선택</option>
+                <option value="P1">P1 (최고 심각)</option>
+                <option value="P2">P2 (심각)</option>
+                <option value="P3">P3 (중간)</option>
+                <option value="P4">P4 (낮음)</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>장애 발생 시각 <span class="req">*</span></label>
+              <input type="time" id="i-start" />
+            </div>
+            <div class="field">
+              <label>복구 완료 시각</label>
+              <input type="time" id="i-end" />
+            </div>
+          </div>
+          <div class="field">
+            <label>장애 현황</label>
+            <select id="i-status">
+              <option value="조사중">🔴 조사중</option>
+              <option value="대응중">🟡 대응중</option>
+              <option value="복구완료">🟢 복구완료</option>
+              <option value="모니터링중">🔵 모니터링중</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="section-label">장애 상세</div>
+          <div class="field">
+            <label>영향 시스템/서비스 <span class="req">*</span></label>
+            <input type="text" id="i-system" placeholder="예: MTS 해외주식 주문, API 연동 게이트웨이, 체결통보 서버" />
+          </div>
+          <div class="field">
+            <label>장애 원인 (Root Cause) <span class="req">*</span></label>
+            <textarea id="i-cause" rows="3" placeholder="예: 미국 프리마켓 거래량 급증으로 FIX 세션 연결 한도 초과, Timeout 미처리로 인한 큐 누적"></textarea>
+          </div>
+          <div class="field">
+            <label>증상 상세</label>
+            <textarea id="i-symptom" rows="2" placeholder="예: 주문 응답 지연 5~30초, ERR_CONN_TIMEOUT 오류 코드 발생, 일부 체결확인 누락"></textarea>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="section-label">영향 규모 (Impact)</div>
+          <div class="field-row">
+            <div class="field">
+              <label>영향 고객 수 <span class="req">*</span></label>
+              <input type="text" id="i-customers" placeholder="예: 약 3,200명" />
+            </div>
+            <div class="field">
+              <label>영향 계좌 수</label>
+              <input type="text" id="i-accounts" placeholder="예: 약 4,100건" />
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>미체결 잔여 주문 건수</label>
+              <input type="text" id="i-orders" placeholder="예: 약 850건" />
+            </div>
+            <div class="field">
+              <label>영향 잔고금액 (추정)</label>
+              <input type="text" id="i-balance" placeholder="예: 약 USD 12.5M" />
+            </div>
+          </div>
+          <div class="field">
+            <label>영향 거래 범위</label>
+            <input type="text" id="i-scope" placeholder="예: 미국 현물 전 종목, ETF 포함" />
+          </div>
+          <div class="field">
+            <label>민원/CS 유입 건수</label>
+            <input type="text" id="i-complaints" placeholder="예: 전화 120건, 채팅 45건 (집계중)" />
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="section-label">정밀 타임라인 <span style="color:var(--muted);font-size:11px;font-weight:400;">(시스템/대응 기준)</span></div>
+          <div class="timeline-inputs" id="i-timeline-rows">
+            <div class="timeline-row">
+              <input type="time" placeholder="시각" />
+              <input type="text" placeholder="상황 설명 (예: 모니터링 알람 수신)" />
+              <button class="btn-del" onclick="delRow(this)">✕</button>
+            </div>
+          </div>
+          <button class="btn-add-row" onclick="addRow('i-timeline-rows')">+ 타임라인 추가</button>
+        </div>
+
+        <div class="form-section">
+          <div class="section-label">대응 및 복구</div>
+          <div class="field">
+            <label>즉시 조치 내용 <span class="req">*</span></label>
+            <textarea id="i-immediate" rows="2" placeholder="예: 거래소 FIX 세션 긴급 재연결, 주문 수신 일시 차단, 비상 라우팅 전환"></textarea>
+          </div>
+          <div class="field">
+            <label>복구 절차</label>
+            <textarea id="i-recovery" rows="2" placeholder="예: 1) 백업 FIX 세션 활성화 2) 큐 잔여 주문 재처리 3) 체결 확인 검증"></textarea>
+          </div>
+          <div class="field">
+            <label>에스컬레이션 경로</label>
+            <input type="text" id="i-escalation" placeholder="예: 해외주식팀장 → IT본부장 → CTO 보고" />
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="section-label">사후 조치</div>
+          <div class="field">
+            <label>재발방지 대책 <span class="req">*</span></label>
+            <textarea id="i-prevention" rows="2" placeholder="예: FIX 세션 이중화, 임계치 알람 조정(기존 90% → 70%), 자동 세션 재연결 로직 추가"></textarea>
+          </div>
+          <div class="field">
+            <label>고객 안내 계획</label>
+            <textarea id="i-notice" rows="2" placeholder="예: SMS 발송 예정 (17:00), 공지사항 게시, 개별 영향 고객 전화 안내"></textarea>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Post-Mortem 예정일</label>
+              <input type="date" id="i-postmortem" />
+            </div>
+            <div class="field">
+              <label>금감원 보고 여부</label>
+              <select id="i-fss">
+                <option value="">선택</option>
+                <option value="해당없음">해당없음</option>
+                <option value="검토중">검토중</option>
+                <option value="보고완료">보고완료</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="section-label">공유 및 담당자</div>
+          <div class="field">
+            <label>작성자/보고자</label>
+            <input type="text" id="i-author" placeholder="예: 홍길동 차장 (해외주식팀)" />
+          </div>
+          <div class="field">
+            <label>공유 대상</label>
+            <input type="text" id="i-recipients" placeholder="예: 해외주식팀, IT본부, CS센터, 리스크관리팀, 준법감시팀" />
+          </div>
+          <div class="field">
+            <label>다음 상황 업데이트 예정</label>
+            <input type="text" id="i-next-update" placeholder="예: 30분 후 (15:30), 복구 완료 시 즉시" />
+          </div>
+          <div class="field">
+            <label>특이사항 / 추가 메모</label>
+            <textarea id="i-memo" rows="2" placeholder="예: 타 증권사 동일 장애 확인됨, 거래소 측 원인 규명 협조 요청 중"></textarea>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="generateIncident()">🚨 문서 생성</button>
+          <button class="btn btn-secondary" onclick="resetIncident()">↺ 초기화</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Output Panel -->
+    <div>
+      <div class="doc-preview">
+        <div class="doc-preview-header">
+          <div>
+            <div class="doc-type-badge badge-incident">🚨 장애 내부공유 문서</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px;" id="i-doc-meta">문서를 생성하면 여기에 표시됩니다</div>
+          </div>
+          <div class="output-actions">
+            <button class="btn-sm btn-sm-copy" onclick="copyDoc()">📋 복사</button>
+            <button class="btn-sm btn-sm-print" onclick="window.print()">🖨️ 인쇄</button>
+          </div>
+        </div>
+        <div id="i-doc-content">
+          <div class="doc-placeholder">
+            <div class="icon">🚨</div>
+            <p>좌측 양식을 작성 후<br><strong>문서 생성</strong> 버튼을 눌러주세요</p>
+            <br>
+            <small>생성된 문서는 복사·인쇄 가능합니다</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── Utilities ───────────────────────────────────────────────────────────────
+function v(id) { return (document.getElementById(id) || {}).value || ''; }
+function now() { return new Date().toLocaleString('ko-KR', {year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}); }
+function fmtDate(d) {
+  if (!d) return '';
+  const [y,m,day] = d.split('-');
+  return `${y}년 ${m}월 ${day}일`;
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Clock
+function updateClock() {
+  document.getElementById('current-time').textContent = new Date().toLocaleString('ko-KR', {year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// ─── Tabs ─────────────────────────────────────────────────────────────────────
+let currentTab = 'complaint';
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('page-complaint').classList.toggle('hidden', tab !== 'complaint');
+  document.getElementById('page-incident').classList.toggle('hidden', tab !== 'incident');
+  document.getElementById('tab-complaint').classList.toggle('active', tab === 'complaint');
+  document.getElementById('tab-incident').classList.toggle('active', tab === 'incident');
+}
+
+// ─── Timeline Rows ────────────────────────────────────────────────────────────
+function addRow(containerId) {
+  const container = document.getElementById(containerId);
+  const row = document.createElement('div');
+  row.className = 'timeline-row';
+  row.innerHTML = `<input type="time" placeholder="시각" /><input type="text" placeholder="상황 설명" /><button class="btn-del" onclick="delRow(this)">✕</button>`;
+  container.appendChild(row);
+}
+function delRow(btn) {
+  const container = btn.parentElement.parentElement;
+  if (container.children.length > 1) btn.parentElement.remove();
+  else showToast('최소 1개 항목이 필요합니다');
+}
+function getTimeline(containerId) {
+  const rows = document.getElementById(containerId).querySelectorAll('.timeline-row');
+  const items = [];
+  rows.forEach(row => {
+    const inputs = row.querySelectorAll('input');
+    const time = inputs[0].value;
+    const desc = inputs[1].value.trim();
+    if (desc) items.push({ time: time || '??:??', desc });
+  });
+  return items;
+}
+
+// ─── Copy ─────────────────────────────────────────────────────────────────────
+function copyDoc() {
+  const contentId = currentTab === 'complaint' ? 'doc-content' : 'i-doc-content';
+  const el = document.getElementById(contentId);
+  const text = el.innerText;
+  navigator.clipboard.writeText(text).then(() => showToast('✅ 클립보드에 복사되었습니다')).catch(() => showToast('❌ 복사 실패 - 직접 선택해 주세요'));
+}
+
+// ─── Severity mapping ─────────────────────────────────────────────────────────
+function levelColor(level) {
+  if (level === 'P1') return '#c0392b';
+  if (level === 'P2') return '#e67e22';
+  if (level === 'P3') return '#b45309';
+  return '#1a7f5a';
+}
+function levelClass(level) {
+  if (level === 'P1') return 'impact-s1';
+  if (level === 'P2') return 'impact-s2';
+  if (level === 'P3') return 'impact-s3';
+  return 'impact-s4';
+}
+function statusIcon(s) {
+  if (s === '조사중') return '🔴';
+  if (s === '대응중') return '🟡';
+  if (s === '복구완료') return '🟢';
+  return '🔵';
+}
+
+// ─── Summary Builders ─────────────────────────────────────────────────────────
+function buildComplaintSummary({ date, startTime, endTime, duration, service, reason, stock, symptom, customers, accounts, scope, action, compensation, prevention }) {
+  const parts = [];
+
+  // 발생 문장
+  let opening = `${fmtDate(date)} ${startTime ? startTime + '부터' : ''} <strong>${service || '해당 서비스'}</strong>에서 장애가 발생하였습니다.`;
+  parts.push(opening);
+
+  // 원인 문장
+  let causeSentence = `장애 원인은 <strong>${reason}</strong>으로 확인되었으며`;
+  if (stock) causeSentence += `, 종목 관련 사항으로는 <strong>${stock}</strong>이 확인되었습니다`;
+  else causeSentence += `, 고객께서는 <strong>${symptom || '서비스 이용에 불편'}</strong>을 겪으셨습니다`;
+  causeSentence += '.';
+  parts.push(causeSentence);
+
+  // 영향 규모 문장
+  if (customers || accounts || scope) {
+    let impactSentence = '이번 장애로 인해';
+    if (customers) impactSentence += ` <strong>${customers}</strong>의 고객`;
+    if (accounts) impactSentence += `(계좌 ${accounts})`;
+    if (scope) impactSentence += `께서 <strong>${scope}</strong> 거래에 영향을 받으셨습니다`;
+    else impactSentence += '께서 영향을 받으셨습니다';
+    impactSentence += '.';
+    parts.push(impactSentence);
+  }
+
+  // 조치 및 복구 문장
+  if (action) {
+    let actionSentence = `당사는 장애 인지 즉시 <strong>${action}</strong>을 수행하였으며`;
+    if (endTime) actionSentence += `, <strong>${endTime} 복구 완료</strong>(지속시간: ${duration})되었습니다`;
+    else actionSentence += ', 현재 복구 작업이 진행 중입니다';
+    actionSentence += '.';
+    parts.push(actionSentence);
+  }
+
+  // 보상 문장
+  if (compensation) {
+    parts.push(`불편을 드린 고객분들께 <strong>${compensation}</strong>을 안내드릴 예정입니다.`);
+  }
+
+  // 재발방지 문장
+  if (prevention) {
+    parts.push(`재발 방지를 위해 <strong>${prevention}</strong> 등의 대책을 수립하였습니다.`);
+  }
+
+  return parts.join(' ');
+}
+
+function buildIncidentSummary({ date, start, end, duration, level, status, system, cause, symptom, customers, accounts, orders, balance, scope, immediate, escalation, nextUpdate }) {
+  const parts = [];
+
+  // 발생 문장
+  let opening = `${fmtDate(date)} <strong>${start ? start + '경' : ''}</strong> <strong>${system || '해외주식 시스템'}</strong>에서 장애가 발생하였습니다`;
+  if (level) opening += `(장애등급: <strong>${level}</strong>)`;
+  opening += '.';
+  parts.push(opening);
+
+  // 원인 문장
+  parts.push(`장애 원인(Root Cause)은 <strong>${cause}</strong>으로 확인되었습니다${symptom ? `; 주요 증상으로 <strong>${symptom}</strong>이 관측되었습니다` : ''}.`);
+
+  // 영향 규모 문장
+  const impacts = [];
+  if (customers) impacts.push(`고객 <strong>${customers}</strong>`);
+  if (accounts) impacts.push(`계좌 <strong>${accounts}</strong>`);
+  if (orders) impacts.push(`미처리 주문 <strong>${orders}</strong>`);
+  if (balance) impacts.push(`영향 잔고 <strong>${balance}</strong>`);
+  if (impacts.length > 0) {
+    parts.push(`영향 규모는 ${impacts.join(', ')}${scope ? ` (${scope})` : ''}에 달합니다.`);
+  }
+
+  // 현재 상태 및 조치
+  let statusSentence = `현재 상태는 <strong>${statusIcon(status)} ${status}</strong>이며`;
+  if (end) statusSentence += `, <strong>${end} 복구 완료</strong>(총 ${duration})되었습니다`;
+  else statusSentence += ', 복구 작업이 진행 중입니다';
+  statusSentence += '.';
+  parts.push(statusSentence);
+
+  if (immediate) {
+    parts.push(`즉각 조치로 <strong>${immediate}</strong>를 수행하였습니다.`);
+  }
+
+  if (escalation) {
+    parts.push(`에스컬레이션 경로: ${escalation}.`);
+  }
+
+  if (nextUpdate) {
+    parts.push(`다음 상황 업데이트: <strong>${nextUpdate}</strong>.`);
+  }
+
+  return parts.join(' ');
+}
+
+// ─── COMPLAINT GENERATOR ──────────────────────────────────────────────────────
+function generateComplaint() {
+  const date = v('c-date');
+  const startTime = v('c-start-time');
+  const endTime = v('c-end-time');
+  const author = v('c-author') || '담당자';
+  const service = v('c-service');
+  const reason = v('c-reason');
+  const stock = v('c-stock');
+  const symptom = v('c-symptom');
+  const customers = v('c-customers');
+  const accounts = v('c-accounts');
+  const scope = v('c-scope');
+  const action = v('c-action');
+  const compensation = v('c-compensation');
+  const prevention = v('c-prevention');
+  const fss = v('c-fss');
+  const docInfo = v('c-doc');
+  const contact = v('c-contact');
+  const memo = v('c-memo');
+  const timeline = getTimeline('c-timeline-rows');
+
+  if (!date || !startTime || !service || !reason || !symptom) {
+    showToast('⚠️ 필수 항목(*)을 입력해 주세요'); return;
+  }
+
+  const duration = (() => {
+    if (!startTime || !endTime) return '복구시간 확인 중';
+    const [sh,sm] = startTime.split(':').map(Number);
+    const [eh,em] = endTime.split(':').map(Number);
+    const diff = (eh*60+em) - (sh*60+sm);
+    if (diff < 0) return '익일 복구';
+    return `약 ${Math.floor(diff/60)}시간 ${diff%60}분`;
+  })();
+
+  const docId = `CM-${date.replace(/-/g,'')}-${Math.floor(Math.random()*900)+100}`;
+  document.getElementById('c-doc-meta').textContent = `문서번호: ${docId} | 작성일시: ${now()} | 작성자: ${author}`;
+
+  let timelineHtml = '';
+  if (timeline.length > 0) {
+    timelineHtml = `<div class="timeline">` + timeline.map((t,i) => `
+      <div class="timeline-item">
+        <div class="timeline-time">${t.time}</div>
+        <div class="timeline-desc">${t.desc}</div>
+      </div>`).join('') + `</div>`;
+  } else {
+    timelineHtml = `<div style="color:var(--muted);font-size:12px;">타임라인 미입력</div>`;
+  }
+
+  const summaryText = buildComplaintSummary({ date, startTime, endTime, duration, service, reason, stock, symptom, customers, accounts, scope, action, compensation, prevention });
+
+  const html = `
+<div class="doc-title">고객 민원 응대문서</div>
+
+<div class="doc-meta">
+  <div class="doc-meta-item"><span class="doc-meta-key">문서번호</span><span class="doc-meta-val">${docId}</span></div>
+  <div class="doc-meta-item"><span class="doc-meta-key">작성일시</span><span class="doc-meta-val">${now()}</span></div>
+  <div class="doc-meta-item"><span class="doc-meta-key">발생일자</span><span class="doc-meta-val">${fmtDate(date)}</span></div>
+  <div class="doc-meta-item"><span class="doc-meta-key">작성자</span><span class="doc-meta-val">${author}</span></div>
+  <div class="doc-meta-item"><span class="doc-meta-key">장애 발생</span><span class="doc-meta-val">${startTime}</span></div>
+  <div class="doc-meta-item"><span class="doc-meta-key">복구 시각</span><span class="doc-meta-val">${endTime || '확인 중'} (지속시간 ${duration})</span></div>
+</div>
+
+<div class="doc-section">
+  <div class="doc-section-title">1. 장애 개요</div>
+  <div class="doc-highlight red">
+    <strong>영향 서비스:</strong> ${service}<br>
+    <strong>장애 사유:</strong> ${reason}${stock ? `<br><strong>종목 관련 사유:</strong> ${stock}` : ''}
+  </div>
+  <div class="doc-text" style="margin-top:8px;">${symptom}</div>
+</div>
+
+<div class="doc-section">
+  <div class="doc-section-title orange">2. 영향 고객 규모</div>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-num">${customers || '-'}</div>
+      <div class="stat-label">영향 고객 수</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">${accounts || '-'}</div>
+      <div class="stat-label">영향 계좌 수</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">${scope || '전체'}</div>
+      <div class="stat-label">영향 거래 범위</div>
+    </div>
+  </div>
+</div>
+
+<div class="doc-section">
+  <div class="doc-section-title">3. 고객 관점 타임라인</div>
+  <div style="font-size:12px;color:var(--muted);margin-bottom:6px;">고객께서 경험하신 순서로 정리한 내용입니다.</div>
+  ${timelineHtml}
+</div>
+
+<div class="doc-section">
+  <div class="doc-section-title green">4. 당사 조치 내용</div>
+  <div class="doc-text">${action}</div>
+  ${compensation ? `<div class="doc-highlight green" style="margin-top:8px;"><strong>고객 안내 및 보상:</strong> ${compensation}</div>` : ''}
+</div>
+
+${prevention ? `
+<div class="doc-section">
+  <div class="doc-section-title gray">5. 재발방지 대책</div>
+  <div class="doc-text">${prevention}</div>
+</div>` : ''}
+
+${docInfo ? `
+<div class="doc-section">
+  <div class="doc-section-title gray">6. 거래설명서 관련 안내</div>
+  <div class="doc-text">${docInfo}</div>
+</div>` : ''}
+
+<div class="doc-section">
+  <div class="doc-section-title gray">${prevention || docInfo ? '7' : '5'}. 규정 및 행정 사항</div>
+  <ul class="checklist" style="margin-left:4px;">
+    <li class="${fss === '보고 완료' ? 'done' : ''}">금융감독원 보고: ${fss || '검토 필요'}</li>
+    <li class="done">고객 안내 문자 발송 여부 확인</li>
+    <li>민원 접수 현황 집계 및 CS팀 공유</li>
+    <li>유사 민원 재유입 모니터링 (72시간)</li>
+  </ul>
+</div>
+
+${memo ? `<div class="doc-highlight"><strong>특이사항:</strong> ${memo}</div>` : ''}
+
+<div class="doc-footer">
+  <span>📞 담당: ${contact || '해외주식팀'}</span>
+  <span>본 문서는 내부 사용 목적으로 작성되었습니다</span>
+  <span>${now()}</span>
+</div>
+`;
+
+  document.getElementById('doc-content').innerHTML = html;
+  showToast('✅ 고객민원 응대문서가 생성되었습니다');
+}
+
+function resetComplaint() {
+  ['c-date','c-start-time','c-end-time','c-author','c-service','c-reason','c-stock','c-symptom','c-customers','c-accounts','c-scope','c-action','c-compensation','c-prevention','c-fss','c-doc','c-contact','c-memo'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  document.getElementById('c-timeline-rows').innerHTML = `<div class="timeline-row"><input type="time" placeholder="시각" /><input type="text" placeholder="고객이 경험한 상황" /><button class="btn-del" onclick="delRow(this)">✕</button></div>`;
+  document.getElementById('doc-content').innerHTML = `<div class="doc-placeholder"><div class="icon">📋</div><p>좌측 양식을 작성 후<br><strong>문서 생성</strong> 버튼을 눌러주세요</p><br><small>생성된 문서는 복사·인쇄 가능합니다</small></div>`;
+  document.getElementById('c-doc-meta').textContent = '문서를 생성하면 여기에 표시됩니다';
+  showToast('↺ 초기화되었습니다');
+}
+
+// ─── INCIDENT GENERATOR ───────────────────────────────────────────────────────
+function generateIncident() {
+  const title = v('i-title');
+  const date = v('i-date');
+  const level = v('i-level');
+  const start = v('i-start');
+  const end = v('i-end');
+  const status = v('i-status') || '조사중';
+  const system = v('i-system');
+  const cause = v('i-cause');
+  const symptom = v('i-symptom');
+  const customers = v('i-customers');
+  const accounts = v('i-accounts');
+  const orders = v('i-orders');
+  const balance = v('i-balance');
+  const scope = v('i-scope');
+  const complaints = v('i-complaints');
+  const immediate = v('i-immediate');
+  const recovery = v('i-recovery');
+  const escalation = v('i-escalation');
+  const prevention = v('i-prevention');
+  const notice = v('i-notice');
+  const postmortem = v('i-postmortem');
+  const fss = v('i-fss');
+  const author = v('i-author') || '담당자';
+  const recipients = v('i-recipients');
+  const nextUpdate = v('i-next-update');
+  const memo = v('i-memo');
+  const timeline = getTimeline('i-timeline-rows');
+
+  if (!date || !start || !system || !cause || !immediate) {
+    showToast('⚠️ 필수 항목(*)을 입력해 주세요'); return;
+  }
+
+  const duration = (() => {
+    if (!start || !end) return '복구 진행 중';
+    const [sh,sm] = start.split(':').map(Number);
+    const [eh,em] = end.split(':').map(Number);
+    const diff = (eh*60+em) - (sh*60+sm);
+    if (diff < 0) return '익일 복구';
+    return `${Math.floor(diff/60)}시간 ${diff%60}분`;
+  })();
+
+  const incId = `INC-${date.replace(/-/g,'')}-${Math.floor(Math.random()*900)+100}`;
+  document.getElementById('i-doc-meta').textContent = `문서번호: ${incId} | 작성일시: ${now()} | 작성자: ${author}`;
+
+  let timelineHtml = '';
+  if (timeline.length > 0) {
+    timelineHtml = `<div class="timeline">` + timeline.map((t, i) => {
+      const cls = i === 0 ? 'red' : (i === timeline.length - 1 && end ? 'green' : '');
+      return `<div class="timeline-item ${cls}">
+        <div class="timeline-time">${t.time}</div>
+        <div class="timeline-desc">${t.desc}</div>
+      </div>`;
+    }).join('') + `</div>`;
+  } else {
+    timelineHtml = `<div style="color:var(--muted);font-size:12px;">타임라인 미입력</div>`;
+  }
+
+  const lc = levelClass(level);
+  const html = `
+<div class="doc-title">[장애 내부공유] ${title || '해외주식 시스템 장애'}</div>
+
+<div class="doc-meta">
+  <div class="doc-meta-item"><span class="doc-meta-key">문서번호</span><span class="doc-meta-val">${incId}</span></div>
+  <div class="doc-meta-item"><span class="doc-meta-key">작성일시</span><span class="doc-meta-val">${now()}</span></div>
+  <div class="doc-meta-item"><span class="doc-meta-key">발생일자</span><span class="doc-meta-val">${fmtDate(date)}</span></div>
+  <div class="doc-meta-item"><span class="doc-meta-key">작성/보고자</span><span class="doc-meta-val">${author}</span></div>
+  <div class="doc-meta-item"><span class="doc-meta-key">장애 등급</span><span class="doc-meta-val">${level ? `<span class="impact-badge ${lc}">${level}</span>` : '-'}</span></div>
+  <div class="doc-meta-item"><span class="doc-meta-key">현재 상태</span><span class="doc-meta-val">${statusIcon(status)} ${status}</span></div>
+  <div class="doc-meta-item"><span class="doc-meta-key">장애 발생</span><span class="doc-meta-val">${start}</span></div>
+  <div class="doc-meta-item"><span class="doc-meta-key">복구 완료</span><span class="doc-meta-val">${end || '진행 중'} (총 ${duration})</span></div>
+  ${recipients ? `<div class="doc-meta-item" style="grid-column:1/-1;"><span class="doc-meta-key">공유 대상</span><span class="doc-meta-val">${recipients}</span></div>` : ''}
+</div>
+
+<div class="doc-section">
+  <div class="doc-section-title red">1. 장애 개요 (Executive Summary)</div>
+  <div class="doc-highlight red">
+    <strong>영향 시스템:</strong> ${system}<br>
+    <strong>장애 원인 (Root Cause):</strong> ${cause}
+    ${symptom ? `<br><strong>증상:</strong> ${symptom}` : ''}
+  </div>
+</div>
+
+<div class="doc-section">
+  <div class="doc-section-title orange">2. 영향 규모 (Impact)</div>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-num">${customers || '-'}</div>
+      <div class="stat-label">영향 고객 수</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">${accounts || '-'}</div>
+      <div class="stat-label">영향 계좌 수</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">${orders || '-'}</div>
+      <div class="stat-label">미처리 주문 건수</div>
+    </div>
+  </div>
+  <div class="doc-meta" style="margin-top:10px;">
+    ${balance ? `<div class="doc-meta-item"><span class="doc-meta-key">영향 잔고금액</span><span class="doc-meta-val">${balance}</span></div>` : ''}
+    ${scope ? `<div class="doc-meta-item"><span class="doc-meta-key">영향 범위</span><span class="doc-meta-val">${scope}</span></div>` : ''}
+    ${complaints ? `<div class="doc-meta-item"><span class="doc-meta-key">민원 유입</span><span class="doc-meta-val">${complaints}</span></div>` : ''}
+  </div>
+</div>
+
+<div class="doc-section">
+  <div class="doc-section-title">3. 상세 대응 타임라인</div>
+  ${timelineHtml}
+</div>
+
+<div class="doc-section">
+  <div class="doc-section-title green">4. 즉시 조치 및 복구 절차</div>
+  <div class="doc-highlight green">
+    <strong>즉시 조치:</strong> ${immediate}
+  </div>
+  ${recovery ? `<div class="doc-text" style="margin-top:8px;"><strong>복구 절차:</strong><br>${recovery}</div>` : ''}
+  ${escalation ? `<div class="doc-highlight" style="margin-top:8px;"><strong>에스컬레이션:</strong> ${escalation}</div>` : ''}
+</div>
+
+<div class="doc-section">
+  <div class="doc-section-title gray">5. 재발방지 대책</div>
+  <div class="doc-text">${prevention || '수립 예정'}</div>
+</div>
+
+<div class="doc-section">
+  <div class="doc-section-title gray">6. 고객 안내 및 사후 조치</div>
+  ${notice ? `<div class="doc-text"><strong>고객 안내 계획:</strong> ${notice}</div>` : ''}
+  <ul class="checklist" style="margin-top:8px;">
+    <li>영향 고객 개별 SMS/앱 푸시 발송</li>
+    <li>홈페이지/MTS 공지사항 게시</li>
+    <li>CS센터 응대 스크립트 배포</li>
+    <li class="${fss === '보고완료' ? 'done' : ''}">금융감독원 보고: ${fss || '검토 필요'}</li>
+    <li ${postmortem ? 'class="done"' : ''}>Post-Mortem 회의${postmortem ? `: ${fmtDate(postmortem)} 예정` : ': 일정 미확정'}</li>
+    <li>피해 고객 보상 방안 검토</li>
+  </ul>
+</div>
+
+${nextUpdate ? `<div class="doc-highlight"><strong>다음 상황 업데이트:</strong> ${nextUpdate}</div>` : ''}
+${memo ? `<div class="doc-highlight" style="margin-top:8px;"><strong>특이사항:</strong> ${memo}</div>` : ''}
+
+<div class="doc-footer">
+  <span>작성: ${author}</span>
+  <span>⚠️ 대외비 — 내부 공유 전용</span>
+  <span>${now()}</span>
+</div>
+`;
+
+  document.getElementById('i-doc-content').innerHTML = html;
+  showToast('✅ 장애 내부공유 문서가 생성되었습니다');
+}
+
+function resetIncident() {
+  ['i-title','i-date','i-level','i-start','i-end','i-status','i-system','i-cause','i-symptom','i-customers','i-accounts','i-orders','i-balance','i-scope','i-complaints','i-immediate','i-recovery','i-escalation','i-prevention','i-notice','i-postmortem','i-fss','i-author','i-recipients','i-next-update','i-memo'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  document.getElementById('i-timeline-rows').innerHTML = `<div class="timeline-row"><input type="time" placeholder="시각" /><input type="text" placeholder="상황 설명" /><button class="btn-del" onclick="delRow(this)">✕</button></div>`;
+  document.getElementById('i-doc-content').innerHTML = `<div class="doc-placeholder"><div class="icon">🚨</div><p>좌측 양식을 작성 후<br><strong>문서 생성</strong> 버튼을 눌러주세요</p><br><small>생성된 문서는 복사·인쇄 가능합니다</small></div>`;
+  document.getElementById('i-doc-meta').textContent = '문서를 생성하면 여기에 표시됩니다';
+  showToast('↺ 초기화되었습니다');
+}
+
+// Set today's date as default
+document.addEventListener('DOMContentLoaded', () => {
+  const today = new Date().toISOString().split('T')[0];
+  ['c-date','i-date'].forEach(id => { const el = document.getElementById(id); if(el) el.value = today; });
+});
+</script>
+</body>
+</html>
