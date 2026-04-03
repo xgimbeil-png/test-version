@@ -1052,30 +1052,30 @@ function buildIncidentSummary({ date, start, end, duration, level, status, syste
 function buildComplaintSummary({ date, startTime, endTime, duration, service, reason, stock, symptom, customers, accounts, scope, action, compensation, prevention }) {
   const parts = [];
 
-  parts.push(`${fmtDate(date)} <strong>${startTime ? startTime + '부터' : ''}</strong> <strong>${service || '해당 서비스'}</strong>에서 장애가 발생하였습니다.`);
+  parts.push(`${fmtDate(date)} ${startTime ? startTime + ',' : ''} <strong>${service || '해당 서비스'}</strong>에서 장애가 발생하였습니다.`);
 
   let causeSentence = `장애 원인은 <strong>${reason}</strong>으로 확인되었으며`;
-  if (stock) causeSentence += `, 종목 관련 사항으로는 <strong>${stock}</strong>이 확인되었습니다`;
-  else causeSentence += `, 고객께서는 <strong>${symptom || '서비스 이용에 불편'}</strong>을 겪으셨습니다`;
+  if (stock) causeSentence += `, 종목 관련 사항으로 <strong>${stock}</strong>이 확인되었습니다`;
+  else if (symptom) causeSentence += `, <strong>${symptom}</strong>의 영향이 있었습니다`;
   parts.push(causeSentence + '.');
 
   if (customers || accounts || scope) {
-    let s = '이번 장애로 인해';
-    if (customers) s += ` <strong>${customers}</strong>의 고객`;
+    let s = '이번 장애로';
+    if (customers) s += ` <strong>${customers}</strong>`;
     if (accounts) s += `(계좌 ${accounts})`;
-    if (scope) s += `께서 <strong>${scope}</strong> 거래에 영향을 받으셨습니다`;
-    else s += '께서 영향을 받으셨습니다';
+    if (scope) s += `은 <strong>${scope}</strong> 거래에 영향이 있었습니다`;
+    else s += `은 서비스 이용에 영향이 있었습니다`;
     parts.push(s + '.');
   }
 
   if (action) {
     let s = `당사는 장애 인지 즉시 <strong>${action}</strong>을 수행하였으며`;
-    if (endTime) s += `, <strong>${endTime} 복구 완료</strong>(지속시간: ${duration})되었습니다`;
+    if (endTime) s += `, <strong>${endTime} 복구 완료</strong>되었습니다(지속시간: ${duration})`;
     else s += ', 현재 복구 작업이 진행 중입니다';
     parts.push(s + '.');
   }
 
-  if (compensation) parts.push(`불편을 드린 고객분들께 <strong>${compensation}</strong>을 안내드릴 예정입니다.`);
+  if (compensation) parts.push(`영향 고객에 대해 <strong>${compensation}</strong>을 진행할 예정입니다.`);
   if (prevention) parts.push(`재발 방지를 위해 <strong>${prevention}</strong> 등의 대책을 수립하였습니다.`);
 
   return parts.join(' ');
@@ -1084,27 +1084,29 @@ function buildComplaintSummary({ date, startTime, endTime, duration, service, re
 function buildIncidentSummary({ date, start, end, duration, level, status, system, cause, symptom, customers, accounts, orders, balance, scope, immediate, escalation, nextUpdate }) {
   const parts = [];
 
-  let opening = `${fmtDate(date)} <strong>${start ? start + '경' : ''}</strong> <strong>${system || '해외주식 시스템'}</strong>에서 장애가 발생하였습니다`;
+  let opening = `${fmtDate(date)} ${start ? start + ',' : ''} <strong>${system || '해외주식 시스템'}</strong>에서 장애가 발생하였습니다`;
   if (level) opening += `(장애등급: <strong>${level}</strong>)`;
   parts.push(opening + '.');
 
-  parts.push(`장애 원인(Root Cause)은 <strong>${cause}</strong>으로 확인되었습니다${symptom ? `, 주요 증상으로 <strong>${symptom}</strong>이 관측되었습니다` : ''}.`);
+  parts.push(`장애 원인은 <strong>${cause}</strong>으로 확인되었으며${symptom ? `, <strong>${symptom}</strong>의 증상이 관측되었습니다` : ', 상세 원인 분석이 진행 중입니다'}.`);
 
   const impacts = [];
-  if (customers) impacts.push(`고객 <strong>${customers}</strong>`);
+  if (customers) impacts.push(`<strong>${customers}</strong>`);
   if (accounts) impacts.push(`계좌 <strong>${accounts}</strong>`);
   if (orders) impacts.push(`미처리 주문 <strong>${orders}</strong>`);
-  if (balance) impacts.push(`영향 잔고 <strong>${balance}</strong>`);
-  if (impacts.length > 0) parts.push(`영향 규모는 ${impacts.join(', ')}${scope ? ` (${scope})` : ''}에 달합니다.`);
+  if (balance) impacts.push(`잔고 <strong>${balance}</strong>`);
+  if (impacts.length > 0) {
+    parts.push(`${impacts.join(', ')}${scope ? ` (${scope})` : ''}은 해당 장애로 인한 영향이 있었습니다.`);
+  }
 
   let statusSentence = `현재 상태는 <strong>${statusIcon(status)} ${status}</strong>이며`;
-  if (end) statusSentence += `, <strong>${end} 복구 완료</strong>(총 ${duration})되었습니다`;
+  if (end) statusSentence += `, <strong>${end} 복구 완료</strong>되었습니다(총 ${duration})`;
   else statusSentence += ', 복구 작업이 진행 중입니다';
   parts.push(statusSentence + '.');
 
   if (immediate) parts.push(`즉각 조치로 <strong>${immediate}</strong>를 수행하였습니다.`);
-  if (escalation) parts.push(`에스컬레이션 경로: <strong>${escalation}</strong>.`);
-  if (nextUpdate) parts.push(`다음 상황 업데이트: <strong>${nextUpdate}</strong>.`);
+  if (escalation) parts.push(`에스컬레이션 경로는 <strong>${escalation}</strong>으로 진행되었습니다.`);
+  if (nextUpdate) parts.push(`다음 상황 업데이트는 <strong>${nextUpdate}</strong>에 공유될 예정입니다.`);
 
   return parts.join(' ');
 }
