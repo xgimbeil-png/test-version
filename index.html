@@ -351,6 +351,38 @@
     border-radius: 0 8px 8px 0;
     padding: 14px 18px;
     margin-bottom: 22px;
+    line-height: 1.9;
+    font-size: 13.5px;
+    color: var(--text);
+  }
+  .doc-summary-label {
+    font-size: 10.5px;
+    font-weight: 800;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 7px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .doc-summary p { margin: 0; }
+  .doc-summary strong { color: var(--primary); }
+  .doc-summary.incident {
+    background: linear-gradient(135deg, #fff5f5 0%, #fff9f9 100%);
+    border-color: #f5c6c1;
+    border-left-color: var(--danger);
+  }
+  .doc-summary.incident .doc-summary-label { color: var(--danger); }
+
+  /* Narrative Summary Block */
+  .doc-summary {
+    background: linear-gradient(135deg, #eef4ff 0%, #f0f8ff 100%);
+    border: 1.5px solid #b8d0f5;
+    border-left: 4px solid var(--primary);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin-bottom: 22px;
     line-height: 1.85;
     font-size: 13.5px;
     color: var(--text);
@@ -1016,6 +1048,67 @@ function buildIncidentSummary({ date, start, end, duration, level, status, syste
   return parts.join(' ');
 }
 
+// ─── Summary Builders ─────────────────────────────────────────────────────────
+function buildComplaintSummary({ date, startTime, endTime, duration, service, reason, stock, symptom, customers, accounts, scope, action, compensation, prevention }) {
+  const parts = [];
+
+  parts.push(`${fmtDate(date)} <strong>${startTime ? startTime + '부터' : ''}</strong> <strong>${service || '해당 서비스'}</strong>에서 장애가 발생하였습니다.`);
+
+  let causeSentence = `장애 원인은 <strong>${reason}</strong>으로 확인되었으며`;
+  if (stock) causeSentence += `, 종목 관련 사항으로는 <strong>${stock}</strong>이 확인되었습니다`;
+  else causeSentence += `, 고객께서는 <strong>${symptom || '서비스 이용에 불편'}</strong>을 겪으셨습니다`;
+  parts.push(causeSentence + '.');
+
+  if (customers || accounts || scope) {
+    let s = '이번 장애로 인해';
+    if (customers) s += ` <strong>${customers}</strong>의 고객`;
+    if (accounts) s += `(계좌 ${accounts})`;
+    if (scope) s += `께서 <strong>${scope}</strong> 거래에 영향을 받으셨습니다`;
+    else s += '께서 영향을 받으셨습니다';
+    parts.push(s + '.');
+  }
+
+  if (action) {
+    let s = `당사는 장애 인지 즉시 <strong>${action}</strong>을 수행하였으며`;
+    if (endTime) s += `, <strong>${endTime} 복구 완료</strong>(지속시간: ${duration})되었습니다`;
+    else s += ', 현재 복구 작업이 진행 중입니다';
+    parts.push(s + '.');
+  }
+
+  if (compensation) parts.push(`불편을 드린 고객분들께 <strong>${compensation}</strong>을 안내드릴 예정입니다.`);
+  if (prevention) parts.push(`재발 방지를 위해 <strong>${prevention}</strong> 등의 대책을 수립하였습니다.`);
+
+  return parts.join(' ');
+}
+
+function buildIncidentSummary({ date, start, end, duration, level, status, system, cause, symptom, customers, accounts, orders, balance, scope, immediate, escalation, nextUpdate }) {
+  const parts = [];
+
+  let opening = `${fmtDate(date)} <strong>${start ? start + '경' : ''}</strong> <strong>${system || '해외주식 시스템'}</strong>에서 장애가 발생하였습니다`;
+  if (level) opening += `(장애등급: <strong>${level}</strong>)`;
+  parts.push(opening + '.');
+
+  parts.push(`장애 원인(Root Cause)은 <strong>${cause}</strong>으로 확인되었습니다${symptom ? `, 주요 증상으로 <strong>${symptom}</strong>이 관측되었습니다` : ''}.`);
+
+  const impacts = [];
+  if (customers) impacts.push(`고객 <strong>${customers}</strong>`);
+  if (accounts) impacts.push(`계좌 <strong>${accounts}</strong>`);
+  if (orders) impacts.push(`미처리 주문 <strong>${orders}</strong>`);
+  if (balance) impacts.push(`영향 잔고 <strong>${balance}</strong>`);
+  if (impacts.length > 0) parts.push(`영향 규모는 ${impacts.join(', ')}${scope ? ` (${scope})` : ''}에 달합니다.`);
+
+  let statusSentence = `현재 상태는 <strong>${statusIcon(status)} ${status}</strong>이며`;
+  if (end) statusSentence += `, <strong>${end} 복구 완료</strong>(총 ${duration})되었습니다`;
+  else statusSentence += ', 복구 작업이 진행 중입니다';
+  parts.push(statusSentence + '.');
+
+  if (immediate) parts.push(`즉각 조치로 <strong>${immediate}</strong>를 수행하였습니다.`);
+  if (escalation) parts.push(`에스컬레이션 경로: <strong>${escalation}</strong>.`);
+  if (nextUpdate) parts.push(`다음 상황 업데이트: <strong>${nextUpdate}</strong>.`);
+
+  return parts.join(' ');
+}
+
 // ─── COMPLAINT GENERATOR ──────────────────────────────────────────────────────
 function generateComplaint() {
   const date = v('c-date');
@@ -1054,6 +1147,8 @@ function generateComplaint() {
   const docId = `CM-${date.replace(/-/g,'')}-${Math.floor(Math.random()*900)+100}`;
   document.getElementById('c-doc-meta').textContent = `문서번호: ${docId} | 작성일시: ${now()} | 작성자: ${author}`;
 
+  const summaryText = buildComplaintSummary({ date, startTime, endTime, duration, service, reason, stock, symptom, customers, accounts, scope, action, compensation, prevention });
+
   let timelineHtml = '';
   if (timeline.length > 0) {
     timelineHtml = `<div class="timeline">` + timeline.map((t,i) => `
@@ -1077,6 +1172,11 @@ function generateComplaint() {
   <div class="doc-meta-item"><span class="doc-meta-key">작성자</span><span class="doc-meta-val">${author}</span></div>
   <div class="doc-meta-item"><span class="doc-meta-key">장애 발생</span><span class="doc-meta-val">${startTime}</span></div>
   <div class="doc-meta-item"><span class="doc-meta-key">복구 시각</span><span class="doc-meta-val">${endTime || '확인 중'} (지속시간 ${duration})</span></div>
+</div>
+
+<div class="doc-summary">
+  <div class="doc-summary-label">✦ 요약문</div>
+  <p>${summaryText}</p>
 </div>
 
 <div class="doc-section">
@@ -1207,6 +1307,8 @@ function generateIncident() {
   const incId = `INC-${date.replace(/-/g,'')}-${Math.floor(Math.random()*900)+100}`;
   document.getElementById('i-doc-meta').textContent = `문서번호: ${incId} | 작성일시: ${now()} | 작성자: ${author}`;
 
+  const incSummaryText = buildIncidentSummary({ date, start, end, duration, level, status, system, cause, symptom, customers, accounts, orders, balance, scope, immediate, escalation, nextUpdate });
+
   let timelineHtml = '';
   if (timeline.length > 0) {
     timelineHtml = `<div class="timeline">` + timeline.map((t, i) => {
@@ -1234,6 +1336,11 @@ function generateIncident() {
   <div class="doc-meta-item"><span class="doc-meta-key">장애 발생</span><span class="doc-meta-val">${start}</span></div>
   <div class="doc-meta-item"><span class="doc-meta-key">복구 완료</span><span class="doc-meta-val">${end || '진행 중'} (총 ${duration})</span></div>
   ${recipients ? `<div class="doc-meta-item" style="grid-column:1/-1;"><span class="doc-meta-key">공유 대상</span><span class="doc-meta-val">${recipients}</span></div>` : ''}
+</div>
+
+<div class="doc-summary incident">
+  <div class="doc-summary-label">✦ 요약문</div>
+  <p>${incSummaryText}</p>
 </div>
 
 <div class="doc-section">
